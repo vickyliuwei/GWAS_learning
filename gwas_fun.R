@@ -1,3 +1,4 @@
+#output gwas_re
 load("/root/RNA_test/TPM_test.RData")#gwaa data_dir
 library(parallel)
 library(GenABEL.data)
