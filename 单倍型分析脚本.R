@@ -13,6 +13,6 @@ heatmap.2(geno_1, main="",
           col=c("slateblue4", "olivedrab"), density.info="none", trace="none", 
           RowSideColors= myClusterSideBar,cexCol=0.8,srtCol = 45,
           key.title = NULL,labCol = snp_1,labRow = ind$V1)
-#can also sort indvidual mannually
+#can also sort indviduals mannually
 geno_1 <- geno_1[sort(geno_1[,i]),]
 
