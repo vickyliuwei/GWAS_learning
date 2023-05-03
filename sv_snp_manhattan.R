@@ -33,5 +33,24 @@ ggplot(don, aes(x=BPcum, y=-log10(Pvalue))) +
   geom_hline(yintercept = c(5.47,7.55),linetype = "longdash", size = 1) +
   geom_vline(xintercept = c(32618760,55814404,81923307,104218866),alpha = 0.8,color = "grey") 
 dev.off()
-
+#add legend by create a pic
+p2<-ggplot()+geom_pointrange(data=data.frame(x=5,y=1,ymin=2,ymax=2), 
+ aes(x=x,y=y,ymin=ymin,ymax=ymax), 
+ fill="red",color="red")+ 
+ geom_pointrange(data=data.frame(x=5,y=1.5,ymin=1.5,ymax=1.5), 
+ aes(x=x,y=y,ymin=ymin,ymax=ymax), 
+ fill="blue", 
+ color="blue",shape=17)+ 
+ theme_void()+ 
+ geom_text(data=data.frame(x=10,y=1), 
+ aes(x=x,y=y),label="SNP", 
+ hjust=-0.1)+ 
+ geom_text(data=data.frame(x=10,y=1.5), 
+ aes(x=x,y=y),label="SV", 
+ hjust=-0.1)+ 
+ xlim(1,100)# to create a pic as legend
+p1+annotation_custom(grob = ggplotGrob(p2), 
+ xmin = 1000,xmax = 2500, 
+ ymin = 6.5,ymax=8) -> p3 
+ p3 # add it in the manhattan pic
   
