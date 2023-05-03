@@ -35,4 +35,12 @@ myleading <- function(i){
 }
 n <- 1:length(dir_list)
 r <- mclapply(n,FUN = myleading,mc.cores = 10)
-
+#if use this pipeline in win
+clnum <- detectCores()
+cl <- makeCluster(getOption("cl.cores", clnum))
+clusterEvalQ(cl,library(GenABEL))
+clusterEvalQ(cl,library(stringr))
+clusterEvalQ(cl,library(GenABEL.data))
+clusterExport(cl,c("dir_list","n"))
+r <- parLapply(cl,col_names,fun = GWAS)
+stopCluster(cl)
