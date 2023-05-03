@@ -1,4 +1,4 @@
-load("/root/RNA_test/TPM_test.RData")#gwaadata_dir
+load("/root/RNA_test/TPM_test.RData")#gwaa data_dir
 library(parallel)
 library(GenABEL.data)
 library(GenABEL)
@@ -6,7 +6,9 @@ library(stringr)
 data <- tpm_a
 phe_sort <- phdata(tpm_a)[,c(3:ncol(phdata(tpm_a)))]
 col_names <- colnames(phe_sort)
-thres <- -log10(0.05/nsnps(data))
+thres <- -log10(0.05/nsnps(data))#use java gec.jar to calculate will be beter 
+#calculate effective snps numbers
+#java -jar gec.jar -Xmx1g --effect-number --maf 0.03 --no-web --plink-binary bed --genome --out 
 thres2 <- 4
 kin <- ibs(data,weight = "freq")
 export.plink(data,"/w/00/g/g01/user319/data_gwas/tpm")#output plink 
@@ -20,7 +22,7 @@ GWAS <- function( i ){
   if(!(class(mm) == "try-error")){
     cat(i,"pass","\n")
   } else cat(i,"fail","\n")
-  if(any(-log10(mm[,"Pc1df"]) >= thres)){
+  if(any(-log10(mm[,"Pc1df"]) >= thres2)){ #can change to get different results
     options(bitmapType='cairo')
     png(paste0("/w/00/g/g01/user319/plot/",i,".png"))#a dir to put plotpic in 
     par(mfrow=c(1,3))
@@ -53,4 +55,13 @@ GWAS <- function( i ){
   return(0) 
 }
 r <- mclapply(col_names,FUN = GWAS, mc.cores = 10) 
+#if use this pipeline in windows
+clnum <- detectCores()
+cl <- makeCluster(getOption("cl.cores", clnum))
+clusterEvalQ(cl,library(GenABEL))
+clusterEvalQ(cl,library(stringr))
+clusterEvalQ(cl,library(GenABEL.data))
+clusterExport(cl,c("phe_sort","data","kin","thres","thres2","col_names"))
+r <- parLapply(cl,col_names,fun = GWAS)
+stopCluster(cl)
  
